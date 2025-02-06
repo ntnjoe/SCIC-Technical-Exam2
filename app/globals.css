@@ -2,20 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@keyframes animate {
+	0% {
+		transform: translateX(100%);
+	}
+	50% {
+		transform: translateX(0);
+	}
+	80% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.scroll-hidden::-webkit-scrollbar {
+	display: none;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.scroll-hidden {
+	-ms-overflow-style: none; /* For Internet Explorer */
+	scrollbar-width: none; /* For Firefox */
+}
+
+.custom-gradient {
+	background: rgb(31, 41, 55);
+	background: linear-gradient(
+		0deg,
+		rgba(31, 41, 55, 1) 10%,
+		rgba(31, 41, 55, 0) 100%
+	);
 }
