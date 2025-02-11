@@ -16,12 +16,17 @@ export default function TodoList() {
 		return user.id;
 	};
 
-	const editTask = async (taskId, newTitle) => {
-		const { error } = await supabase.from("tasks").update({ title: newTitle }).eq("id", taskId);
-		console.log("debug ran");
+	const editTask = async (taskId, newTitle, newPriority) => {
+		const { error } = await supabase
+			.from("tasks")
+			.update({ title: newTitle, priority: newPriority })
+			.eq("id", taskId);
+
 		if (error) return console.log("Error updating task:", error);
 
-		setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId ? { ...task, title: newTitle } : task)));
+		setTasks((prevTasks) =>
+			prevTasks.map((task) => (task.id === taskId ? { ...task, title: newTitle, priority: newPriority } : task))
+		);
 	};
 
 	const deleteTask = async (taskId) => {
@@ -32,7 +37,7 @@ export default function TodoList() {
 		setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
 	};
 
-	const addTask = async (task) => {
+	const addTask = async (task, priority) => {
 		if (!task.trim()) return;
 
 		const userId = await fetchUser();
@@ -43,6 +48,7 @@ export default function TodoList() {
 					user_id: userId,
 					title: task,
 					completed: false,
+					priority: priority,
 				},
 			])
 			.select()
@@ -57,7 +63,10 @@ export default function TodoList() {
 	const fetchTasks = async () => {
 		setIsLoading(true);
 		const userId = await fetchUser();
-		const { data, error } = await supabase.from("tasks").select("title, id, completed").eq("user_id", userId);
+		const { data, error } = await supabase
+			.from("tasks")
+			.select("title, id, completed, priority")
+			.eq("user_id", userId);
 
 		if (error) {
 			console.log(error);
